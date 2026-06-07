@@ -1,0 +1,29 @@
+
+services:
+  api:
+    build:
+      context: ./backend
+    container_name: matdeal_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://matdeal:matdeal@db:5432/matdeal
+
+  db:
+    image: postgres:16
+    container_name: matdeal_db
+    environment:
+      POSTGRES_DB: matdeal
+      POSTGRES_USER: matdeal
+      POSTGRES_PASSWORD: matdeal
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
