@@ -5,6 +5,8 @@ from app.models.store import Store
 from app.models.product import Product
 from app.models.store_product import StoreProduct
 
+from app.models.price_history import PriceHistory
+
 def seed():
     db = SessionLocal()
 
@@ -64,6 +66,21 @@ def seed():
 
         ]
         db.add_all(store_products)
+        db.flush()
+
+        prices = [
+            PriceHistory(
+                store_product_id = store_products[0].id,
+                price = 19.90,
+                currency = "SEK",
+            ),
+            PriceHistory(
+                store_product_id = store_products[1].id,
+                price = 16.00,
+                currency = "SEK",
+            )
+        ]
+        db.add_all(prices)
         db.flush()
 
         db.commit()
