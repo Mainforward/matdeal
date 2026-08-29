@@ -3,11 +3,15 @@
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
+from app.api.products import router as products_router
 from app.db.dependencies import get_db
 from app.models.store import Store
 from app.schemas.store import StoreRead
 
+
 app = FastAPI(title="MatDeal API")
+
+app.include_router(products_router)
 
 @app.get("/health")
 async def healt():
