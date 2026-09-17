@@ -8,10 +8,7 @@ from app.models.store_product import StoreProduct
 from app.models.store import Store
 from app.models.price_history import PriceHistory
 
-from app.schemas.product import (
-    ProductOffersResponse,
-    ProductResponse,
-)
+from app.schemas.product import ProductOffersResponse, ProductResponse
 
 from uuid import UUID
 
@@ -19,6 +16,29 @@ router = APIRouter(
     prefix="/products",
     tags=["products"]
 )
+
+@router.get(
+    "/{product_id}",
+    response_model=ProductResponse
+)
+
+def get_product(
+    product_id: UUID,
+    db: Session = Depends(get_db),
+):
+    product = (
+        db.query(Product)
+        .filter(Product.id == product_id)
+        .first()
+    )
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found",
+        )
+
+    return product
 
 @router.get(
      "",
@@ -40,6 +60,7 @@ def search_products(
         query = query.filter(
             Product.name.ilike(search_pattern)
             | Product.brand.ilike(search_pattern)
+            | Product.ean.ilike(search_pattern)
         )
 
     return query.order_by(Product.name).limit(50).all()
