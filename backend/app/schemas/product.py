@@ -1,7 +1,7 @@
 from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class OfferResponse(BaseModel):
@@ -17,7 +17,18 @@ class ProductOffersResponse(BaseModel):
     offers: list[OfferResponse]
 
 class ProductResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID
     ean: str | None
     name: str
     brand: str | None
+
+class ProductCreate(BaseModel):
+    ean: str | None = None
+    name: str
+    brand: str | None = None
+    size_value: float | None = None
+    size_unit: str | None = None
+    category: str | None = None
+    image_url: str | None = None

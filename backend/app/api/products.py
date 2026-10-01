@@ -8,7 +8,7 @@ from app.models.store_product import StoreProduct
 from app.models.store import Store
 from app.models.price_history import PriceHistory
 
-from app.schemas.product import ProductOffersResponse, ProductResponse
+from app.schemas.product import ProductOffersResponse, ProductResponse, ProductCreate
 
 from uuid import UUID
 
@@ -140,3 +140,47 @@ def get_product_offers(
             for row in results
         ],
     }
+
+@router.post(
+    "",
+    response_model=ProductResponse,
+    status_code=201,
+)
+
+def create_product(
+    product_data: ProductCreate,
+    db: Session = Depends(get_db),
+):
+    if product_data.ean:
+        existing_product = (
+            db.query(Product)
+            .filter(Product.ean == product_data.ean)
+            .first()
+        )
+
+        if existing_product:
+            raise HTTPException(
+                status_code=409,
+                detail="Product with this ean already exists",
+            )
+
+    print("PRODUCT EAN:", product_data.ean)
+
+    product = Product(
+        ean=product_data.ean,
+        name=product_data.name,
+        brand=product_data.brand,
+        size_value=product_data.size_value,
+        size_unit=product_data.size_unit,
+        category=product_data.category,
+        image_url=product_data.image_url,
+    )
+
+
+    db.add(product)
+    print("PRODUCT NAME:", product.name)
+    db.commit()
+    db.refresh(product)
+
+    return product
+
