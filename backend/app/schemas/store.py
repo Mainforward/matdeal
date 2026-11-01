@@ -9,7 +9,9 @@ class StoreBase(BaseModel):
 
 
 class StoreCreate(StoreBase):
-    pass
+    chain_name: str
+    store_name: str
+    city: str
 
 
 class StoreRead(StoreBase):
