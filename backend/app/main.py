@@ -11,12 +11,15 @@ from app.schemas.store import StoreRead, StoreCreate
 from app.api.store_products import router as store_products_router
 from app.api.prices import router as prices_router
 
+from app.api.receipts import router as receipts_router  
+
 
 app = FastAPI(title="MatDeal API")
 
 app.include_router(products_router)
 app.include_router(store_products_router)
 app.include_router(prices_router)
+app.include_router(receipts_router)
 
 @app.get("/health")
 async def healt():

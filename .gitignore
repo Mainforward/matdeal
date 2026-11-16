@@ -220,3 +220,6 @@ __marimo__/
 # Drawio
 *.DS_Store
 *.drawio.bkp
+
+# Receipt uploads
+*/app/uploads/receipts/*
